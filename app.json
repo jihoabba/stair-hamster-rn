@@ -9,6 +9,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "ios": {
+      "bundleIdentifier": "com.jihoabba.hamziyoungcha"
+    },
     "plugins": [
       [
         "expo-notifications",

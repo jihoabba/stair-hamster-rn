@@ -10,6 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { useGameState } from './src/hooks/useGameState';
 import { useHealthKit } from './src/hooks/useHealthKit';
 import { usePushNotifications } from './src/hooks/usePushNotifications';
+import { useInterstitialAd, BannerAd, BannerAdSize, BANNER_AD_ID } from './src/hooks/useAds';
 import { getCurrentStage, calcLevel, getNextThreshold, FINAL_MAX } from './src/utils/gameLogic';
 import { WeekStreak } from './src/components/WeekStreak';
 import { LevelUpModal } from './src/components/LevelUpModal';
@@ -43,6 +44,7 @@ export default function App() {
   const [toastMsg, setToastMsg] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [showPaywall, setShowPaywall] = useState(false);
+  const { showAd } = useInterstitialAd();
 
   // Only request push notifications after onboarding is complete
   usePushNotifications(mode !== null ? lastLogDate : undefined);
@@ -111,6 +113,7 @@ export default function App() {
       if (isNewStageLocked) {
         setTimeout(() => setShowPaywall(true), 600);
       } else {
+        if (!isPremium) showAd();
         setTimeout(() => setLevelUpStage(result.newStage), 600);
       }
     } else {
@@ -326,6 +329,23 @@ export default function App() {
           Alert.alert('준비 중', '결제 기능은 곧 추가될 예정이에요!');
         }}
       />
+
+      {/* Banner ad + remove-ad button */}
+      {!isPremium && (
+        <View style={styles.adContainer}>
+          <BannerAd
+            unitId={BANNER_AD_ID}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            requestOptions={{ requestNonPersonalizedAdsOnly: false }}
+          />
+          <TouchableOpacity
+            style={styles.removeAdBtn}
+            onPress={() => Alert.alert('광고 제거', '광고 없이 즐기시려면 프리미엄을 이용해보세요!\n(결제 기능은 곧 추가될 예정이에요 🐹)')}
+          >
+            <Text style={styles.removeAdText}>광고 제거</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -438,4 +458,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 10, alignItems: 'center',
   },
   toastText: { color: theme.paper, fontSize: 13, fontWeight: '600' },
+
+  adContainer: {
+    backgroundColor: theme.paper,
+    borderTopWidth: 1, borderTopColor: theme.line,
+    alignItems: 'center',
+  },
+  removeAdBtn: {
+    paddingVertical: 5,
+  },
+  removeAdText: {
+    fontSize: 10, color: theme.inkLight,
+    textDecorationLine: 'underline',
+  },
 });

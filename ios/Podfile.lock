@@ -96,6 +96,9 @@ PODS:
   - ExpoNotifications (55.0.13):
     - ExpoModulesCore
   - FBLazyVector (0.83.2)
+  - Google-Mobile-Ads-SDK (13.1.0):
+    - GoogleUserMessagingPlatform (>= 1.1)
+  - GoogleUserMessagingPlatform (3.1.0)
   - hermes-engine (0.14.1):
     - hermes-engine/Pre-built (= 0.14.1)
   - hermes-engine/Pre-built (0.14.1)
@@ -1878,6 +1881,30 @@ PODS:
   - ReactNativeDependencies (0.83.2)
   - RNAppleHealthKit (1.7.0):
     - React
+  - RNGoogleMobileAds (16.3.0):
+    - Google-Mobile-Ads-SDK (= 13.1.0)
+    - GoogleUserMessagingPlatform (= 3.1.0)
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1969,7 +1996,13 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - ReactNativeDependencies (from `../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec`)
   - RNAppleHealthKit (from `../node_modules/react-native-health`)
+  - RNGoogleMobileAds (from `../node_modules/react-native-google-mobile-ads`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
+
+SPEC REPOS:
+  trunk:
+    - Google-Mobile-Ads-SDK
+    - GoogleUserMessagingPlatform
 
 EXTERNAL SOURCES:
   AsyncStorage:
@@ -2147,6 +2180,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/ReactNativeDependencies.podspec"
   RNAppleHealthKit:
     :path: "../node_modules/react-native-health"
+  RNGoogleMobileAds:
+    :path: "../node_modules/react-native-google-mobile-ads"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2166,6 +2201,8 @@ SPEC CHECKSUMS:
   ExpoModulesJSI: 7345645083e98be9c33c10027601aff2e445ba72
   ExpoNotifications: 6936e06a76246e881fcf862ef8b31079d957e092
   FBLazyVector: 32e9ed0301d0fcbc1b2b341dd7fcbf291f51eb83
+  Google-Mobile-Ads-SDK: 8429bef6ee1a4e322b0a5571b64217ed8317a3d5
+  GoogleUserMessagingPlatform: befe603da6501006420c206222acd449bba45a9c
   hermes-engine: 11768446a9c0a44a8ad736b91fc6951f8801d157
   RCTDeprecation: a522c536d2c7be8f518dd834883cf6dce1d4f545
   RCTRequired: 44337def23abb244c025e9e7ab58f9cd3d63ec7d
@@ -2238,6 +2275,7 @@ SPEC CHECKSUMS:
   ReactCommon: 8868269b67561136a7970be188b40738135af077
   ReactNativeDependencies: 5d95b99a0abc17586229c17f290e5bfb91763b4b
   RNAppleHealthKit: 86ef7ab70f762b802f5c5289372de360cca701f9
+  RNGoogleMobileAds: ef3ca85d3fead2bf4eda09e76239d22fcaebd4a4
   Yoga: dd994d8c85dca5cc9b10f5df8c01f9ef1d0da191
 
 PODFILE CHECKSUM: ccdb2fb4c8871b53b561e06bc8483bdd1f836a11

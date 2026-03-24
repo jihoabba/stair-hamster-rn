@@ -48,6 +48,7 @@ export default function App() {
   const [toastMsg, setToastMsg] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [showPaywall, setShowPaywall] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const { showAd } = useInterstitialAd();
 
   // Only request push notifications after onboarding is complete
@@ -78,7 +79,8 @@ export default function App() {
   }
 
   const stage = getCurrentStage(totalStairs);
-  const isLocked = stage.locked && !isPremium;
+  // 걷기 모드는 잠금 없음 (계단 모드와 동일하게 잠금 적용은 계단 모드만)
+  const isLocked = stage.locked && !isPremium && mode !== 'steps';
   const displayStage = isLocked ? getCurrentStage(99) : stage;
   const isSick = penaltyStatus > 0;
   const heroImage = isSick ? SICK_IMAGES[Math.min(penaltyStatus, 3)] : displayStage.image;
@@ -189,10 +191,27 @@ export default function App() {
   };
 
   const handleReset = () => {
+    setShowMenu(false);
     Alert.alert('처음부터?', '정말 리셋할까요?', [
       { text: '아니요', style: 'cancel' },
       { text: '네', style: 'destructive', onPress: resetGame },
     ]);
+  };
+
+  const handleChangeMode = () => {
+    setShowMenu(false);
+    const other = mode === 'steps' ? '계단 모드' : '걷기 모드';
+    const otherKey = mode === 'steps' ? 'stairs' : 'steps';
+    Alert.alert('운동 바꾸기', `${other}로 바꿀까요?\n(기록은 그대로 유지돼요)`, [
+      { text: '취소', style: 'cancel' },
+      { text: '바꾸기', onPress: () => completeOnboarding(otherKey) },
+    ]);
+  };
+
+  const handleRemoveAds = () => {
+    setShowMenu(false);
+    trackRemoveAdsClicked();
+    Alert.alert('광고 제거', '광고 없이 즐기시려면 프리미엄을 이용해보세요!\n(결제 기능은 곧 추가될 예정이에요 🐹)');
   };
 
   const hkBtnLabel = mode === 'steps'
@@ -209,6 +228,9 @@ export default function App() {
       >
         {/* ── Top bar ── */}
         <View style={styles.topBar}>
+          <TouchableOpacity onPress={() => setShowMenu(true)} style={styles.menuBtn} hitSlop={{top:8,bottom:8,left:8,right:8}}>
+            <Text style={styles.menuBtnText}>☰</Text>
+          </TouchableOpacity>
           <Text style={styles.appTitle}>🐹 햄찌는 영차영차</Text>
           <View style={styles.topStats}>
             <View style={styles.topBadge}>
@@ -289,9 +311,6 @@ export default function App() {
 
           <WeekStreak weekLog={weekLog} />
 
-          <TouchableOpacity onPress={handleReset} style={styles.resetWrap}>
-            <Text style={styles.resetText}>처음부터 다시</Text>
-          </TouchableOpacity>
           <View style={{ height: 16 }} />
         </ScrollView>
 
@@ -343,6 +362,28 @@ export default function App() {
         }}
       />
 
+      {/* ── Menu modal ── */}
+      {showMenu && (
+        <TouchableOpacity style={styles.menuOverlay} activeOpacity={1} onPress={() => setShowMenu(false)}>
+          <View style={styles.menuPanel}>
+            <TouchableOpacity style={styles.menuItem} onPress={handleChangeMode}>
+              <Text style={styles.menuItemText}>🔄  운동 바꾸기</Text>
+              <Text style={styles.menuItemSub}>{mode === 'steps' ? '걷기 → 계단' : '계단 → 걷기'}</Text>
+            </TouchableOpacity>
+            <View style={styles.menuDivider} />
+            <TouchableOpacity style={styles.menuItem} onPress={handleRemoveAds}>
+              <Text style={styles.menuItemText}>🚫  광고 제거</Text>
+              <Text style={styles.menuItemSub}>프리미엄으로 광고 없애기</Text>
+            </TouchableOpacity>
+            <View style={styles.menuDivider} />
+            <TouchableOpacity style={styles.menuItem} onPress={handleReset}>
+              <Text style={[styles.menuItemText, { color: '#e05050' }]}>🗑  처음부터 다시</Text>
+              <Text style={styles.menuItemSub}>모든 기록 초기화</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      )}
+
       {/* Banner ad + remove-ad button */}
       {!isPremium && (
         <View style={styles.adContainer}>
@@ -353,10 +394,7 @@ export default function App() {
           />
           <TouchableOpacity
             style={styles.removeAdBtn}
-            onPress={() => {
-              trackRemoveAdsClicked();
-              Alert.alert('광고 제거', '광고 없이 즐기시려면 프리미엄을 이용해보세요!\n(결제 기능은 곧 추가될 예정이에요 🐹)');
-            }}
+            onPress={handleRemoveAds}
           >
             <Text style={styles.removeAdText}>광고 제거</Text>
           </TouchableOpacity>
@@ -474,6 +512,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingVertical: 10, alignItems: 'center',
   },
   toastText: { color: theme.paper, fontSize: 13, fontWeight: '600' },
+
+  menuBtn: { paddingRight: 10 },
+  menuBtnText: { fontSize: 20, color: theme.ink, fontWeight: '700' },
+
+  menuOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    zIndex: 100,
+    justifyContent: 'flex-start',
+  },
+  menuPanel: {
+    position: 'absolute',
+    top: 54,
+    left: 12,
+    width: 220,
+    backgroundColor: theme.paper,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: theme.line,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  menuItem: { paddingHorizontal: 16, paddingVertical: 13 },
+  menuItemText: { fontSize: 14, fontWeight: '700', color: theme.ink, marginBottom: 2 },
+  menuItemSub: { fontSize: 11, color: theme.inkLight },
+  menuDivider: { height: 1, backgroundColor: theme.line, marginHorizontal: 0 },
 
   adContainer: {
     backgroundColor: theme.paper,

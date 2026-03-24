@@ -118,18 +118,12 @@ export default function App() {
     // In steps mode, convert steps → floors before adding
     const floorsToAdd = isStepsMode ? Math.max(1, Math.round(val / 1000)) : val;
     const result = await addStairs(floorsToAdd);
-    const isNewStageLocked = result.newStage.locked && !isPremium;
     trackRecordStairs({ value: floorsToAdd, bonus: result.bonus, mode, newTotal: result.newTotal });
 
     if (result.newStage.minStairs > result.prevStage.minStairs) {
-      if (isNewStageLocked) {
-        trackPaywallShown();
-        setTimeout(() => setShowPaywall(true), 600);
-      } else {
-        if (!isPremium) showAd();
-        trackStageUp({ stageLabel: result.newStage.stageLabel, stageIndex: result.newStage.id ?? result.newStage.minStairs });
-        setTimeout(() => setLevelUpStage(result.newStage), 600);
-      }
+      showAd();
+      trackStageUp({ stageLabel: result.newStage.stageLabel, stageIndex: result.newStage.id ?? result.newStage.minStairs });
+      setTimeout(() => setLevelUpStage(result.newStage), 600);
     } else {
       const displayVal = isStepsMode ? `${val.toLocaleString()}보` : `${val}층`;
       const displayEarned = isStepsMode ? `${(result.earned * 1000).toLocaleString()}보` : `${result.earned}층`;

@@ -17,6 +17,10 @@ import { LevelUpModal } from './src/components/LevelUpModal';
 import { PaywallModal } from './src/components/PaywallModal';
 import { OnboardingScreen } from './src/components/OnboardingScreen';
 import { theme } from './src/styles/theme';
+import {
+  trackAppOpen, trackRecordStairs, trackStageUp,
+  trackPaywallShown, trackRemoveAdsClicked,
+} from './src/utils/analytics';
 
 const { height: SCREEN_H } = Dimensions.get('window');
 const HERO_HEIGHT = SCREEN_H * 0.46;
@@ -48,6 +52,11 @@ export default function App() {
 
   // Only request push notifications after onboarding is complete
   usePushNotifications(mode !== null ? lastLogDate : undefined);
+
+  // Track app open once after load
+  useEffect(() => {
+    if (isLoaded && mode !== null) trackAppOpen();
+  }, [isLoaded]);
 
   const translateY = useRef(new Animated.Value(0)).current;
 
@@ -109,11 +118,15 @@ export default function App() {
     const floorsToAdd = isStepsMode ? Math.max(1, Math.round(val / 1000)) : val;
     const result = await addStairs(floorsToAdd);
     const isNewStageLocked = result.newStage.locked && !isPremium;
+    trackRecordStairs({ value: floorsToAdd, bonus: result.bonus, mode, newTotal: result.newTotal });
+
     if (result.newStage.minStairs > result.prevStage.minStairs) {
       if (isNewStageLocked) {
+        trackPaywallShown();
         setTimeout(() => setShowPaywall(true), 600);
       } else {
         if (!isPremium) showAd();
+        trackStageUp({ stageLabel: result.newStage.stageLabel, stageIndex: result.newStage.id ?? result.newStage.minStairs });
         setTimeout(() => setLevelUpStage(result.newStage), 600);
       }
     } else {
@@ -340,7 +353,10 @@ export default function App() {
           />
           <TouchableOpacity
             style={styles.removeAdBtn}
-            onPress={() => Alert.alert('광고 제거', '광고 없이 즐기시려면 프리미엄을 이용해보세요!\n(결제 기능은 곧 추가될 예정이에요 🐹)')}
+            onPress={() => {
+              trackRemoveAdsClicked();
+              Alert.alert('광고 제거', '광고 없이 즐기시려면 프리미엄을 이용해보세요!\n(결제 기능은 곧 추가될 예정이에요 🐹)');
+            }}
           >
             <Text style={styles.removeAdText}>광고 제거</Text>
           </TouchableOpacity>

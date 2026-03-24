@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { loadState, saveState } from '../utils/storage';
 import { getCurrentStage } from '../utils/gameLogic';
+import { trackNeglectPenalty } from '../utils/analytics';
 
 function daysBetween(dateStrA, dateStrB) {
   if (!dateStrA || !dateStrB) return 0;
@@ -55,6 +56,7 @@ export function useGameState() {
 
       if (newTotal !== savedTotal) {
         saveState({ ...s, totalStairs: newTotal, lastPenaltyDate: newLastPenaltyDate });
+        trackNeglectPenalty({ daysMissed: days, penalty, status });
       }
       setIsLoaded(true);
     });

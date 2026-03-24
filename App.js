@@ -79,8 +79,7 @@ export default function App() {
   }
 
   const stage = getCurrentStage(totalStairs);
-  // 걷기 모드는 잠금 없음 (계단 모드와 동일하게 잠금 적용은 계단 모드만)
-  const isLocked = stage.locked && !isPremium && mode !== 'steps';
+  const isLocked = false; // 잠금 없음 — 광고 수익 모델로 전환
   const displayStage = isLocked ? getCurrentStage(99) : stage;
   const isSick = penaltyStatus > 0;
   const heroImage = isSick ? SICK_IMAGES[Math.min(penaltyStatus, 3)] : displayStage.image;

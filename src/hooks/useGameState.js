@@ -7,6 +7,7 @@ export function useGameState() {
   const [streak, setStreak] = useState(0);
   const [weekLog, setWeekLog] = useState(Array(7).fill(false));
   const [lastLogDate, setLastLogDate] = useState(null);
+  const [equippedItems, setEquippedItems] = useState([]);
 
   useEffect(() => {
     loadState().then(s => {
@@ -15,6 +16,7 @@ export function useGameState() {
       setStreak(s.streak ?? 0);
       setWeekLog(s.weekLog ?? Array(7).fill(false));
       setLastLogDate(s.lastLogDate ?? null);
+      setEquippedItems(s.equippedItems ?? []);
     });
   }, []);
 
@@ -37,7 +39,7 @@ export function useGameState() {
       newLastLogDate = today;
     }
 
-    const newState = { totalStairs: newTotal, streak: newStreak, weekLog: newWeekLog, lastLogDate: newLastLogDate };
+    const newState = { totalStairs: newTotal, streak: newStreak, weekLog: newWeekLog, lastLogDate: newLastLogDate, equippedItems };
     setTotalStairs(newTotal);
     setStreak(newStreak);
     setWeekLog(newWeekLog);
@@ -47,14 +49,23 @@ export function useGameState() {
     return { earned, bonus, newTotal, newStage: getCurrentStage(newTotal), prevStage };
   }, [totalStairs, streak, weekLog, lastLogDate]);
 
+  const toggleItem = useCallback(async (itemId) => {
+    const next = equippedItems.includes(itemId)
+      ? equippedItems.filter(id => id !== itemId)
+      : [...equippedItems, itemId];
+    setEquippedItems(next);
+    await saveState({ totalStairs, streak, weekLog, lastLogDate, equippedItems: next });
+  }, [equippedItems, totalStairs, streak, weekLog, lastLogDate]);
+
   const resetGame = useCallback(async () => {
-    const init = { totalStairs: 0, streak: 0, weekLog: Array(7).fill(false), lastLogDate: null };
+    const init = { totalStairs: 0, streak: 0, weekLog: Array(7).fill(false), lastLogDate: null, equippedItems: [] };
     setTotalStairs(0);
     setStreak(0);
     setWeekLog(Array(7).fill(false));
     setLastLogDate(null);
+    setEquippedItems([]);
     await saveState(init);
   }, []);
 
-  return { totalStairs, streak, weekLog, lastLogDate, addStairs, resetGame };
+  return { totalStairs, streak, weekLog, lastLogDate, equippedItems, addStairs, toggleItem, resetGame };
 }

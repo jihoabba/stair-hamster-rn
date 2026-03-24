@@ -59,5 +59,12 @@ target 'stairhamsterrn' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
+    # Fix AsyncStorageSpec header search path for async-storage 2.x compatibility
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['HEADER_SEARCH_PATHS'] ||= '$(inherited)'
+        config.build_settings['HEADER_SEARCH_PATHS'] += ' "$(PODS_ROOT)/../AsyncStorageSpec/.."'
+      end
+    end
   end
 end

@@ -21,7 +21,7 @@ export function ItemSelector({ totalStairs, equippedItems, onToggle }) {
               <Text style={[styles.emoji, !unlocked && styles.emojiLocked]}>{item.emoji}</Text>
               <Text style={[styles.name, !unlocked && styles.nameLocked]}>{item.name}</Text>
               {!unlocked && (
-                <Text style={styles.lockLabel}>{item.unlockAt.toLocaleString()}계단</Text>
+                <Text style={styles.lockLabel}>{item.unlockAt.toLocaleString()}층</Text>
               )}
               {equipped && <View style={styles.equippedDot} />}
             </TouchableOpacity>

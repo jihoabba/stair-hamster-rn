@@ -3,7 +3,10 @@ import AppleHealthKit from 'react-native-health';
 
 const PERMISSIONS = {
   permissions: {
-    read: [AppleHealthKit.Constants.Permissions.FlightsClimbed],
+    read: [
+      AppleHealthKit.Constants.Permissions.FlightsClimbed,
+      AppleHealthKit.Constants.Permissions.Steps,
+    ],
     write: [],
   },
 };
@@ -30,26 +33,17 @@ export function useHealthKit() {
   const fetchTodayFlights = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-
     try {
-      if (!isAuthorized) {
-        await requestAuthorization();
-      }
-
+      if (!isAuthorized) await requestAuthorization();
       const now = new Date();
       const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
       const endOfDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
-
       return new Promise((resolve, reject) => {
         AppleHealthKit.getFlightsClimbed(
           { startDate: startOfDay, endDate: endOfDay, includeManuallyAdded: false },
           (err, results) => {
             setIsLoading(false);
-            if (err) {
-              setError('HealthKit 읽기 실패');
-              reject(err);
-              return;
-            }
+            if (err) { setError('HealthKit 읽기 실패'); reject(err); return; }
             const total = results.reduce((sum, r) => sum + (r.value || 0), 0);
             resolve(Math.round(total));
           }
@@ -62,5 +56,33 @@ export function useHealthKit() {
     }
   }, [isAuthorized, requestAuthorization]);
 
-  return { isAuthorized, isLoading, error, fetchTodayFlights };
+  const fetchTodaySteps = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      if (!isAuthorized) await requestAuthorization();
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
+      const endOfDay   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+      return new Promise((resolve, reject) => {
+        AppleHealthKit.getStepCount(
+          { startDate: startOfDay, endDate: endOfDay },
+          (err, result) => {
+            setIsLoading(false);
+            if (err) { setError('HealthKit 읽기 실패'); reject(err); return; }
+            const steps = result?.value ?? 0;
+            // 1만보 = 10층 환산
+            const floors = Math.round((steps / 10000) * 10);
+            resolve({ steps: Math.round(steps), floors });
+          }
+        );
+      });
+    } catch (e) {
+      setIsLoading(false);
+      setError(e.message);
+      throw e;
+    }
+  }, [isAuthorized, requestAuthorization]);
+
+  return { isAuthorized, isLoading, error, fetchTodayFlights, fetchTodaySteps };
 }

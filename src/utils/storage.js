@@ -1,10 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as FileSystem from 'expo-file-system';
 
-const KEY = 'stairHeroV2';
+const FILE_URI = FileSystem.documentDirectory + 'stairHeroV2.json';
 
 export const loadState = async () => {
   try {
-    const raw = await AsyncStorage.getItem(KEY);
+    const info = await FileSystem.getInfoAsync(FILE_URI);
+    if (!info.exists) return null;
+    const raw = await FileSystem.readAsStringAsync(FILE_URI);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -13,7 +15,7 @@ export const loadState = async () => {
 
 export const saveState = async (state) => {
   try {
-    await AsyncStorage.setItem(KEY, JSON.stringify(state));
+    await FileSystem.writeAsStringAsync(FILE_URI, JSON.stringify(state));
   } catch (e) {
     console.warn('저장 실패:', e);
   }

@@ -21,7 +21,7 @@ export function MilestoneList({ totalStairs }) {
               !done && isCurrent && styles.dotCurrent,
             ]} />
             <Text style={styles.name}>{m.icon} {m.name}</Text>
-            <Text style={styles.meters}>{m.meters.toLocaleString()}m</Text>
+            <Text style={styles.meters}>{m.floors.toLocaleString()}층</Text>
             {done && <Text style={styles.doneTag}>✓ 달성</Text>}
           </View>
         );

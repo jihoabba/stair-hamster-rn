@@ -26,7 +26,7 @@ export function OnboardingScreen({ onSelect }) {
           <Text style={styles.cardEmoji}>🦶</Text>
           <View style={styles.cardText}>
             <Text style={styles.cardTitle}>걸음 수</Text>
-            <Text style={styles.cardDesc}>하루 1만보 목표{'\n'}1만보 = 10층으로 환산돼요</Text>
+            <Text style={styles.cardDesc}>하루 걸음 수 목표{'\n'}50보 = 1층으로 환산돼요</Text>
           </View>
         </TouchableOpacity>
       </View>

@@ -90,10 +90,10 @@ export default function App() {
   const range = Math.max(1, nextThreshold - displayStage.minStairs);
   const pct = Math.min(100, (totalStairs - displayStage.minStairs) / range * 100);
 
-  // Steps mode: 1층 = 200보 (1만보 = 50층)
+  // Steps mode: 1층 = 50보 (1만보 = 200층)
   const isStepsMode = mode === 'steps';
-  const displayTotal = isStepsMode ? (totalStairs * 200).toLocaleString() : totalStairs.toLocaleString();
-  const displayNext = isMax ? 'MAX' : isStepsMode ? (nextThreshold * 200).toLocaleString() : nextThreshold.toLocaleString();
+  const displayTotal = isStepsMode ? (totalStairs * 50).toLocaleString() : totalStairs.toLocaleString();
+  const displayNext = isMax ? 'MAX' : isStepsMode ? (nextThreshold * 50).toLocaleString() : nextThreshold.toLocaleString();
   const unit = isStepsMode ? '보' : '층';
   const inputPlaceholder = isStepsMode ? '오늘 걸음 수 입력' : '오늘 오른 층 수 입력';
 
@@ -116,7 +116,7 @@ export default function App() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setInputValue('');
     // In steps mode, convert steps → floors before adding
-    const floorsToAdd = isStepsMode ? Math.max(1, Math.round(val / 200)) : val;
+    const floorsToAdd = isStepsMode ? Math.max(1, Math.round(val / 50)) : val;
     const result = await addStairs(floorsToAdd);
     trackRecordStairs({ value: floorsToAdd, bonus: result.bonus, mode, newTotal: result.newTotal });
 
@@ -126,7 +126,7 @@ export default function App() {
       setTimeout(() => setLevelUpStage(result.newStage), 600);
     } else {
       const displayVal = isStepsMode ? `${val.toLocaleString()}보` : `${val}층`;
-      const displayEarned = isStepsMode ? `${(result.earned * 200).toLocaleString()}보` : `${result.earned}층`;
+      const displayEarned = isStepsMode ? `${(result.earned * 50).toLocaleString()}보` : `${result.earned}층`;
       const msg = result.bonus > 1
         ? `🔥 ${displayVal} + 보너스! 총 ${displayEarned}`
         : `✓ ${displayVal} 기록!`;

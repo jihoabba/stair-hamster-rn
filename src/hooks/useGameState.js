@@ -16,7 +16,7 @@ export function useGameState() {
   const [weekLog, setWeekLog] = useState(Array(7).fill(false));
   const [lastLogDate, setLastLogDate] = useState(null);
   const [isPremium, setIsPremium] = useState(false);
-  const [mode, setMode] = useState('steps'); // 'stairs' | 'steps' | null (null = not onboarded)
+  const [mode, setMode] = useState(null); // 'stairs' | 'steps' | null (null = not onboarded)
   const [penaltyStatus, setPenaltyStatus] = useState(0); // 0=ok, 1=hungry, 2=sick, 3=down
   const [isLoaded, setIsLoaded] = useState(false);
 

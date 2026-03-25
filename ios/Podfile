@@ -68,6 +68,7 @@ target 'stairhamsterrn' do
       target.build_configurations.each do |config|
         config.build_settings['HEADER_SEARCH_PATHS'] ||= '$(inherited)'
         config.build_settings['HEADER_SEARCH_PATHS'] += ' "$(PODS_ROOT)/../AsyncStorageSpec/.."'
+        config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
       end
     end
   end

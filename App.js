@@ -309,21 +309,26 @@ export default function App() {
 
         {/* ── Fixed bottom input bar ── */}
         <View style={styles.bottomBar}>
-          <View style={styles.inputRow}>
-            <TextInput
-              style={styles.input}
-              keyboardType="number-pad"
-              placeholder={inputPlaceholder}
-              placeholderTextColor={theme.line}
-              value={inputValue}
-              onChangeText={setInputValue}
-              onSubmitEditing={handleSubmit}
-              returnKeyType="done"
-            />
-            <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-              <Text style={styles.submitBtnText}>기록</Text>
-            </TouchableOpacity>
+          {/* 직접 입력 (서브) */}
+          <View style={styles.manualSection}>
+            <Text style={styles.manualLabel}>직접 입력</Text>
+            <View style={styles.inputRow}>
+              <TextInput
+                style={styles.input}
+                keyboardType="number-pad"
+                placeholder={inputPlaceholder}
+                placeholderTextColor={theme.line}
+                value={inputValue}
+                onChangeText={setInputValue}
+                onSubmitEditing={handleSubmit}
+                returnKeyType="done"
+              />
+              <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+                <Text style={styles.submitBtnText}>기록</Text>
+              </TouchableOpacity>
+            </View>
           </View>
+          {/* 건강앱 가져오기 (메인) */}
           <TouchableOpacity
             style={styles.hkBtn}
             onPress={handleHealthKitFetch}
@@ -476,25 +481,30 @@ const styles = StyleSheet.create({
   bottomBar: {
     backgroundColor: theme.paper,
     borderTopWidth: 1.5, borderTopColor: theme.line,
-    paddingHorizontal: 14, paddingTop: 10, paddingBottom: 8, gap: 8,
+    paddingHorizontal: 14, paddingTop: 8, paddingBottom: 8, gap: 8,
   },
-  inputRow: { flexDirection: 'row', gap: 8 },
+  manualSection: { gap: 4 },
+  manualLabel: {
+    fontSize: 10, fontWeight: '700', color: theme.inkLight,
+    letterSpacing: 1, paddingLeft: 2,
+  },
+  inputRow: { flexDirection: 'row', gap: 6 },
   input: {
-    flex: 1, borderWidth: 2, borderColor: theme.ink, borderRadius: 10,
-    paddingHorizontal: 14, paddingVertical: 11, fontSize: 15,
+    flex: 1, borderWidth: 1.5, borderColor: theme.line, borderRadius: 8,
+    paddingHorizontal: 10, paddingVertical: 7, fontSize: 13,
     color: theme.ink, backgroundColor: theme.bg,
   },
   submitBtn: {
-    backgroundColor: theme.ink, borderRadius: 10,
-    paddingHorizontal: 22, justifyContent: 'center', alignItems: 'center',
+    backgroundColor: theme.ink, borderRadius: 8,
+    paddingHorizontal: 16, justifyContent: 'center', alignItems: 'center',
   },
-  submitBtnText: { color: theme.paper, fontSize: 15, fontWeight: '800' },
+  submitBtnText: { color: theme.paper, fontSize: 13, fontWeight: '800' },
   hkBtn: {
-    backgroundColor: theme.accent, borderRadius: 10,
-    paddingVertical: 11, alignItems: 'center',
+    backgroundColor: theme.accent, borderRadius: 12,
+    paddingVertical: 14, alignItems: 'center',
     borderWidth: 2, borderColor: theme.ink,
   },
-  hkBtnText: { color: theme.white, fontSize: 13, fontWeight: '700' },
+  hkBtnText: { color: theme.white, fontSize: 15, fontWeight: '800' },
 
   resetWrap: { alignItems: 'center', paddingVertical: 12 },
   resetText: { fontSize: 11, color: theme.inkLight, textDecorationLine: 'underline' },

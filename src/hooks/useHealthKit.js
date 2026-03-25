@@ -71,8 +71,8 @@ export function useHealthKit() {
             setIsLoading(false);
             if (err) { setError('HealthKit 읽기 실패'); reject(err); return; }
             const steps = result?.value ?? 0;
-            // 1만보 = 10층 환산
-            const floors = Math.round((steps / 10000) * 10);
+            // 1층 = 50보 환산
+            const floors = Math.max(1, Math.round(steps / 50));
             resolve({ steps: Math.round(steps), floors });
           }
         );

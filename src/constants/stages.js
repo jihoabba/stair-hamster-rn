@@ -10,7 +10,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_1.png'),
   },
   {
-    minStairs: 10,
+    minStairs: 25,
     title: '굴러보는 햄찌',
     subtitle: '일단 한 바퀴는 굴렀음',
     stageLabel: 'STAGE 2',
@@ -20,7 +20,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_2.png'),
   },
   {
-    minStairs: 30,
+    minStairs: 75,
     title: '달리는 햄찌',
     subtitle: '이거 은근 재밌는데?',
     stageLabel: 'STAGE 3',
@@ -30,7 +30,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_3.png'),
   },
   {
-    minStairs: 60,
+    minStairs: 150,
     title: '근육 햄찌',
     subtitle: '멈추면 어색해',
     stageLabel: 'STAGE 4',
@@ -40,7 +40,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_4.png'),
   },
   {
-    minStairs: 100,
+    minStairs: 275,
     title: '전설의 햄찌',
     subtitle: '쳇바퀴가 나한테 맞춤',
     stageLabel: 'STAGE 5',
@@ -50,7 +50,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_5.png'),
   },
   {
-    minStairs: 150,
+    minStairs: 425,
     title: '헤드밴드 햄찌',
     subtitle: '운동복을 사기 시작함',
     stageLabel: 'STAGE 6',
@@ -61,7 +61,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_6.png'),
   },
   {
-    minStairs: 200,
+    minStairs: 575,
     title: '레깅스 햄찌',
     subtitle: '레깅스 입고 나왔더니 다들 쳐다봄',
     stageLabel: 'STAGE 7',
@@ -72,7 +72,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_7.png'),
   },
   {
-    minStairs: 250,
+    minStairs: 750,
     title: '아령 햄찌',
     subtitle: '아령이 가볍게 느껴짐',
     stageLabel: 'STAGE 8',
@@ -83,7 +83,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_8.png'),
   },
   {
-    minStairs: 300,
+    minStairs: 925,
     title: '금메달 햄찌',
     subtitle: '주변 햄찌들이 피하기 시작함',
     stageLabel: 'STAGE 9',
@@ -94,7 +94,7 @@ export const STAGES = [
     bgImage: require('../../assets/bg_9.png'),
   },
   {
-    minStairs: 350,
+    minStairs: 1050,
     title: '왕관 햄찌',
     subtitle: '계단이 나를 두려워한다',
     stageLabel: 'FINAL',

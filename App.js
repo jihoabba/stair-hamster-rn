@@ -10,6 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { useGameState } from './src/hooks/useGameState';
 import { useHealthKit } from './src/hooks/useHealthKit';
 import { usePushNotifications } from './src/hooks/usePushNotifications';
+import mobileAds from 'react-native-google-mobile-ads';
 import { useInterstitialAd, BannerAd, BannerAdSize, BANNER_AD_ID } from './src/hooks/useAds';
 import { getCurrentStage, calcLevel, getNextThreshold, FINAL_MAX } from './src/utils/gameLogic';
 import { WeekStreak } from './src/components/WeekStreak';
@@ -53,6 +54,11 @@ export default function App() {
 
   // Only request push notifications after onboarding is complete
   usePushNotifications(mode !== null ? lastLogDate : undefined);
+
+  // Initialize AdMob SDK once on mount
+  useEffect(() => {
+    mobileAds().initialize();
+  }, []);
 
   // Track app open once after load
   useEffect(() => {

@@ -41,7 +41,7 @@ export default function App() {
   const {
     totalStairs, streak, weekLog, lastLogDate,
     isPremium, mode, penaltyStatus, isLoaded,
-    addStairs, unlockPremium, completeOnboarding, resetGame,
+    addStairs, syncFromHealthKit, unlockPremium, completeOnboarding, resetGame,
   } = useGameState();
   const { isLoading, fetchTodayFlights, fetchTodaySteps } = useHealthKit();
   const [levelUpStage, setLevelUpStage] = useState(null);
@@ -121,6 +121,7 @@ export default function App() {
     }
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     setInputValue('');
+    setShowMenu(false);
     // In steps mode, convert steps → floors before adding
     const floorsToAdd = isStepsMode ? Math.max(1, Math.round(val / 50)) : val;
     const result = await addStairs(floorsToAdd);
@@ -156,9 +157,10 @@ export default function App() {
             { text: '취소', style: 'cancel' },
             {
               text: '기록!',
-              onPress: () => {
+              onPress: async () => {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                addStairs(floors);
+                const result = await syncFromHealthKit(floors);
+                if (!result) triggerToast('이미 오늘 기록 완료!');
               },
             },
           ]
@@ -176,9 +178,10 @@ export default function App() {
             { text: '취소', style: 'cancel' },
             {
               text: '기록!',
-              onPress: () => {
+              onPress: async () => {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                addStairs(flights);
+                const result = await syncFromHealthKit(flights);
+                if (!result) triggerToast('이미 오늘 기록 완료!');
               },
             },
           ]
@@ -315,25 +318,6 @@ export default function App() {
 
         {/* ── Fixed bottom input bar ── */}
         <View style={styles.bottomBar}>
-          {/* 직접 입력 (서브) */}
-          <View style={styles.manualSection}>
-            <Text style={styles.manualLabel}>직접 입력</Text>
-            <View style={styles.inputRow}>
-              <TextInput
-                style={styles.input}
-                keyboardType="number-pad"
-                placeholder={inputPlaceholder}
-                placeholderTextColor={theme.line}
-                value={inputValue}
-                onChangeText={setInputValue}
-                onSubmitEditing={handleSubmit}
-                returnKeyType="done"
-              />
-              <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-                <Text style={styles.submitBtnText}>기록</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
           {/* 건강앱 가져오기 (메인) */}
           <TouchableOpacity
             style={styles.hkBtn}
@@ -370,6 +354,25 @@ export default function App() {
       {showMenu && (
         <TouchableOpacity style={styles.menuOverlay} activeOpacity={1} onPress={() => setShowMenu(false)}>
           <View style={styles.menuPanel}>
+            <View style={styles.menuManualSection}>
+              <Text style={styles.menuManualLabel}>직접 입력</Text>
+              <View style={styles.inputRow}>
+                <TextInput
+                  style={styles.input}
+                  keyboardType="number-pad"
+                  placeholder={inputPlaceholder}
+                  placeholderTextColor={theme.line}
+                  value={inputValue}
+                  onChangeText={setInputValue}
+                  onSubmitEditing={handleSubmit}
+                  returnKeyType="done"
+                />
+                <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
+                  <Text style={styles.submitBtnText}>기록</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.menuDivider} />
             <TouchableOpacity style={styles.menuItem} onPress={handleChangeMode}>
               <Text style={styles.menuItemText}>🔄  운동 바꾸기</Text>
               <Text style={styles.menuItemSub}>{mode === 'steps' ? '걷기 → 계단' : '계단 → 걷기'}</Text>
@@ -546,6 +549,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 8,
     elevation: 8,
+  },
+  menuManualSection: { paddingHorizontal: 16, paddingVertical: 12, gap: 6 },
+  menuManualLabel: {
+    fontSize: 10, fontWeight: '700', color: theme.inkLight, letterSpacing: 1,
   },
   menuItem: { paddingHorizontal: 16, paddingVertical: 13 },
   menuItemText: { fontSize: 14, fontWeight: '700', color: theme.ink, marginBottom: 2 },

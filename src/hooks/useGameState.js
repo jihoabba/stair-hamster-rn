@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { loadState, saveState } from '../utils/storage';
 import { getCurrentStage } from '../utils/gameLogic';
 import { trackNeglectPenalty } from '../utils/analytics';
@@ -19,6 +19,7 @@ export function useGameState() {
   const [mode, setMode] = useState(null); // 'stairs' | 'steps' | null (null = not onboarded)
   const [penaltyStatus, setPenaltyStatus] = useState(0); // 0=ok, 1=hungry, 2=sick, 3=down
   const [isLoaded, setIsLoaded] = useState(false);
+  const lastHKSyncRef = useRef(null);
 
   useEffect(() => {
     loadState().then(s => {
@@ -53,6 +54,7 @@ export function useGameState() {
       setIsPremium(s.isPremium ?? false);
       setMode(s.mode ?? null);
       setPenaltyStatus(status);
+      lastHKSyncRef.current = s.lastHKSync ?? null;
 
       if (newTotal !== savedTotal) {
         saveState({ ...s, totalStairs: newTotal, lastPenaltyDate: newLastPenaltyDate });
@@ -86,10 +88,19 @@ export function useGameState() {
     setStreak(newStreak);
     setWeekLog(newWeekLog);
     setLastLogDate(newLastLogDate);
-    await saveState({ totalStairs: newTotal, streak: newStreak, weekLog: newWeekLog, lastLogDate: newLastLogDate, isPremium, mode });
+    await saveState({ totalStairs: newTotal, streak: newStreak, weekLog: newWeekLog, lastLogDate: newLastLogDate, isPremium, mode, lastHKSync: lastHKSyncRef.current });
 
     return { earned, bonus, newTotal, newStage: getCurrentStage(newTotal), prevStage };
   }, [totalStairs, streak, weekLog, lastLogDate, isPremium, mode]);
+
+  const syncFromHealthKit = useCallback(async (hkValue) => {
+    const today = new Date().toDateString();
+    const prev = lastHKSyncRef.current;
+    const delta = (prev?.date === today) ? Math.max(0, hkValue - prev.value) : hkValue;
+    if (delta === 0) return null;
+    lastHKSyncRef.current = { date: today, value: hkValue };
+    return addStairs(delta);
+  }, [addStairs]);
 
   const unlockPremium = useCallback(async () => {
     setIsPremium(true);
@@ -107,12 +118,13 @@ export function useGameState() {
     setWeekLog(Array(7).fill(false));
     setLastLogDate(null);
     setPenaltyStatus(0);
-    await saveState({ totalStairs: 0, streak: 0, weekLog: Array(7).fill(false), lastLogDate: null, isPremium, mode });
+    lastHKSyncRef.current = null;
+    await saveState({ totalStairs: 0, streak: 0, weekLog: Array(7).fill(false), lastLogDate: null, isPremium, mode, lastHKSync: null });
   }, [isPremium, mode]);
 
   return {
     totalStairs, streak, weekLog, lastLogDate,
     isPremium, mode, penaltyStatus, isLoaded,
-    addStairs, unlockPremium, completeOnboarding, resetGame,
+    addStairs, syncFromHealthKit, unlockPremium, completeOnboarding, resetGame,
   };
 }

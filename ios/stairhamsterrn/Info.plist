@@ -4,35 +4,28 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-9339911776645987~6725654707</string>
-	<key>SKAdNetworkItems</key>
-	<array>
-		<dict>
-			<key>SKAdNetworkIdentifier</key>
-			<string>cstr6suwn9.skadnetwork</string>
-		</dict>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>햄찌는 영차영차</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<key>CFBundleDisplayName</key>
-	<string>햄찌는 영차영차</string>
 	<key>CFBundleName</key>
 	<string>햄찌는 영차영차</string>
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>3</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-9339911776645987~6725654707</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>12.0</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -50,6 +43,13 @@
 	<string>운동 데이터를 기록합니다.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
